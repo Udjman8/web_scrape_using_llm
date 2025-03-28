@@ -16,15 +16,12 @@ import os
 import dotenv
  
 urls = [
-    "https://www.ge.com", "https://about.facebook.com", "https://www.jnj.com",
-    "https://us.pg.com", "https://www.chevron.com", "https://www.intel.com",
-    "https://www.coca-colacompany.com", "https://corporate.walmart.com",
-    "https://www.airbus.com", "https://www.pepsico.com"
+    "https://us.pg.com"
 ]
  
 
 options = Options()
-options.add_argument("--headless")  
+# options.add_argument("--headless")  
 options.add_argument("--disable-gpu")
 options.add_argument("--no-sandbox")
 options.add_argument("start-maximized")
@@ -75,6 +72,9 @@ def fetch_content(url):
 def clean_data(soup):
     for script in soup(['script', 'style']):
         script.decompose()
+        print(soup.get_text(separator=' ', strip=True)) 
+        with open("scraped_data.txt", "a", encoding="utf-8") as file:
+            file.write(soup.get_text(separator=' ', strip=True) + "\n")
     return soup.get_text(separator=' ', strip=True)
  
 GEMINI_API_KEY=os.getenv("GEMINI_API_KEY")
@@ -136,8 +136,7 @@ def get_complete_information(url):
     soup = BeautifulSoup(page_source, 'html.parser')
     cleaned_text = clean_data(soup)
     extracted_info = extract_information_with_gemini(cleaned_text)
- 
-    # If key details are missing, scrape additional "About Us" links
+
     if "not provided" in extracted_info.lower():
         additional_links = extract_relevant_links(soup, url)
         for link in additional_links:
@@ -156,7 +155,7 @@ def get_complete_information(url):
     return extracted_info
  
 
-def save_to_csv(data, filename="company_details.csv"):
+def save_to_csv(data, filename="pg.csv"):
     df = pd.DataFrame(data)
     df.to_csv(filename, index=False)
     print(f"Data saved to {filename}")
