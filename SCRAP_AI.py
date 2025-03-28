@@ -110,7 +110,7 @@ def extract_information_with_gemini(cleaned_text):
     prompt = pre_prompt.format(cleaned_text=cleaned_text)
     return call_gemini_api(prompt)
  
-# ✅ Function to extract relevant links (like "About Us")
+
 def extract_relevant_links(soup, base_url):
     keywords = [ "about", "company", "mission", "values", "ethics", "leadership", "management",
     "team", "founders", "history", "executive", "awards", "recognition", "vision",
@@ -127,7 +127,7 @@ def extract_relevant_links(soup, base_url):
  
     return list(set(links))
  
-# ✅ Function to get complete information, checking additional pages if needed
+
 def get_complete_information(url):
     page_source = fetch_content(url)
     if not page_source:
